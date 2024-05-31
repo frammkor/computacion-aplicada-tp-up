@@ -4,30 +4,39 @@ FRANCO CESPI - IGNACIO CASTELLUCCI - JOAQUÍN SALAS - RAFAEL ALDANA
 
 Repo requerido en el trabajo practico de la materia Computación Aplicada en la Universidad de Palermo
 
-## Pasos para completar las tareas
-
-### Armado de entorno
+## Armado de entorno
 
 1. La máquina virtual está dividida en 9 partes, se deben descargar y ensamblar con el compresor rar. Puede ser utilizado winrar.
 
 2. Se debe tener presente que a la máquina virtual en cuestión no se le conoce la clave de root, por lo que es necesario realizar el blanqueo de la misma previo a realizar las actividades. La clave debe cambiarse a “123456” (sin las comillas).
+
+3. Configurar apt y descargar programas
+
+### Resolucion
+
 -! Recordar deshabilitar el segundo adaptador desde Virtual Box antes de iniciar la maquina virtual
 - Iniciar la maquina y en la pantalla de boot presionar la tecla `e`
 - Modificar la linea de booteo de `ro quiet` (read-only) a `rw init=/bin/bash`
 - Crl + x para continuar con esos cambios
 - Utilizar el comando passwd para habilitar el cambio de password y ingresar ‘123456’
 
-3. Configurar apt y descargar programas
+NOTA: los comandos se ejecutan loageado al sistema como root user
+```bash
+# Hacer una copia de backup del archivo sources.list original
+mv /etc/apt/sources.list /etc/apt/sources.list.bak
 
-- Modificar archivo de apt para poder descargar paquetes:
-- `cd /etc/apt` y `vi source.list` borrar todo e ingresar el siguiente texto:
+# Modificar archivo de apt para poder descargar paquetes utlizando:
+# deb http://deb.debian.org/debian buster main contrib non-free
+# deb-src http://deb.debian.org/debian buster main contrib non-free
+echo "deb http://deb.debian.org/debian buster main contrib non-free" | sudo tee -a /etc/apt/sources.list
+echo "deb-src http://deb.debian.org/debian buster main contrib non-free" | sudo tee -a /etc/apt/sources.list
+
+# aplicar los cambios en source.list
+apt update
+
+# Instalar paquetes que se utilizaran
+apt-get -y install net-tools openssh-server mardiadb-server apache2
 ```
-deb http://deb.debian.org/debian buster main contrib non-free
-deb-src http://deb.debian.org/debian buster main contrib non-free
-```
-- Correr `apt upgrade` para aplicar los cambios en source.list
-- Instalar paquetes que se utilizaran con
-`apt-get -y install net-tools openssh-server mardiadb-server apache2`
 
 ## Setear Servidores
 1. Crear dos maquinas que alberguen un tipo de servidor cada una:
@@ -51,6 +60,78 @@ DBServer
 |           |          |      |       | lv_backup | /backup_dir |
 
 *1: Puede ser que el dispositivo sea sdb, sdc o sdd, por eso el “*”en la descripción de los cuadros.
+
+
+### Resolucion
+
+#### Incorporacion de discos
+1. Configurarle un nuevo disco la maquina virtual (apagada)
+- Configuracion > Almacenamiento > Añadir disco duro > boton crear
+* Reservado dinamicamente
+* Configurar ubicacion y tamaño: 3 GB
+- Selecionar el nuevo disco creado > Seleccionar > Aceptar
+
+2. Preparar, particionar y formatear el nuevo disco
+
+a. Manualmente
+```bash
+# listar informacion de los dispositivos de bloque
+# lsblk
+
+# listar 'storage divices' detectados
+# ls -l /dev/sd*
+
+# cear particion
+fdisk /dev/sdb
+# input:
+# - n
+# - p
+# - 1
+# - ENTER
+# - ENTER
+# - w
+
+# Contruir un sistema de ficheros / Make filesystem
+mkfs -t ext4 /dev/sdb1
+```
+Input:
+
+
+b. Automatizado en el script
+```bash
+# cear particion
+fdisk -u -p /dev/sdb <<EOF
+n
+p
+1
+
+
+w
+EOF
+
+# Contruir un sistema de ficheros / Make filesystem
+mkfs -t ext4 /dev/sdb1
+```
+
+===== serguir viendo video min 1:17:00
+# MONTAJE DE DISCOS
+
+
+# CREACION DE LOS VOLUMENES
+
+
+# chech apache status using:
+# sudo systemctl status apache2
+
+# modify the php.ini file to have a source from a diferent root directory
+# modificar el archivo php.ini para que sirva por default desde el directorio /www_dir
+
+# reiniciar apache para que impacten los cambios
+apachectl restart
+# service apache2 restart
+
+
+```
 
 2. Los archivos correspondientes a la base de datos creados y los archivos php servidos, deben estar en sus respectivos filesystems diferentes, que se deben crear aparte de la instalación y ser montados al inicio del sistema operativo. En ambos servidores se debe contar con un directorio de Backup para resguardos.
 
