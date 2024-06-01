@@ -4,7 +4,7 @@ FRANCO CESPI - IGNACIO CASTELLUCCI - JOAQUÍN SALAS - RAFAEL ALDANA
 
 Repo requerido en el trabajo practico de la materia Computación Aplicada en la Universidad de Palermo
 
-## Armado de entorno
+## 1 - Armado de entorno
 
 1. La máquina virtual está dividida en 9 partes, se deben descargar y ensamblar con el compresor rar. Puede ser utilizado winrar.
 
@@ -12,7 +12,7 @@ Repo requerido en el trabajo practico de la materia Computación Aplicada en la 
 
 3. Configurar apt y descargar programas
 
-### Resolucion
+### Resolución
 
 -! Recordar deshabilitar el segundo adaptador desde Virtual Box antes de iniciar la maquina virtual
 - Iniciar la maquina y en la pantalla de boot presionar la tecla `e`
@@ -21,6 +21,8 @@ Repo requerido en el trabajo practico de la materia Computación Aplicada en la 
 - Utilizar el comando passwd para habilitar el cambio de password y ingresar ‘123456’
 
 NOTA: los comandos se ejecutan loageado al sistema como root user
+
+#### Implementación en bash
 ```bash
 # Hacer una copia de backup del archivo sources.list original
 mv /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -38,7 +40,7 @@ apt update
 apt-get -y install net-tools openssh-server mardiadb-server apache2
 ```
 
-## Setear Servidores
+## 2 - Setear Servidores
 1. Crear dos maquinas que alberguen un tipo de servidor cada una:
 
 a. WEB. Que tenga instalado y funcionando un servidor Apache con soporte para el lenguaje PHP (Instalar PHP7.3 o superior). Debe servir el archivo index.php que se descarga de BlackBoard y usado en el servidor llamado WebServer
@@ -47,13 +49,13 @@ b. MYSQL. Que tenga instalado y funcionando un servidor MySQL o MARIADB. A este 
 *Nota: Que sea instalado y funcionando un servicio SSH, que permita ingresar al usuario root, con la clave pública que se haya en BlackBoard y será usada para ambos servidores.
 *Nota2: Tener presente que solo se puede probar desde la máquina anfitriona o de la misma máquina virtual.
 
-WebServer Machine
+*== WebServer Machine ==*
 | HHD       | RAID     | P.V. | V.G.  | L.V.      | Filesystem  |
 |-----------|----------|------|-------|-----------|-------------|
 | /dev/sd*1 | /dev/md0 | pv0  | vg_tp | lv_www    | /www_dir    |
 |           |          |      |       | lv_backup | /backup_dir |
 
-DBServer
+*== DBServer Machine ==*
 | HHD       | RAID     | P.V. | V.G.  | L.V.      | Filesystem  |
 |-----------|----------|------|-------|-----------|-------------|
 | /dev/sd*1 | /dev/md0 | pv0  | vg_tp | lv_db     | /db_dir     |
@@ -64,16 +66,15 @@ DBServer
 
 ### Resolucion
 
-#### Incorporacion de discos
 1. Configurarle un nuevo disco la maquina virtual (apagada)
 - Configuracion > Almacenamiento > Añadir disco duro > boton crear
 * Reservado dinamicamente
 * Configurar ubicacion y tamaño: 3 GB
 - Selecionar el nuevo disco creado > Seleccionar > Aceptar
 
-2. Preparar, particionar y formatear el nuevo disco
+2. Preparar, particionar formatear y montar el nuevo disco
 
-a. Manualmente
+#### Implementación en bash
 ```bash
 # listar informacion de los dispositivos de bloque
 # lsblk
@@ -91,15 +92,6 @@ fdisk /dev/sdb
 # - ENTER
 # - w
 
-# Contruir un sistema de ficheros / Make filesystem
-mkfs -t ext4 /dev/sdb1
-```
-Input:
-
-
-b. Automatizado en el script
-```bash
-# cear particion
 fdisk -u -p /dev/sdb <<EOF
 n
 p
@@ -111,10 +103,29 @@ EOF
 
 # Contruir un sistema de ficheros / Make filesystem
 mkfs -t ext4 /dev/sdb1
-```
 
-===== serguir viendo video min 1:17:00
+
 # MONTAJE DE DISCOS
+
+# web-server
+mkdir /www_dir
+mkdir /backup_dir
+
+# db-server
+mkdir /db_dir
+mkdir /backup_dir
+
+# agregar 
+# EXTRA usar 'blkid' command para obtener el UUID del dispositivo
+ cp /etc/fstab /home/backups-files
+
+echo "deb http://deb.debian.org/debian buster main contrib non-free" | sudo tee -a /etc/fstab
+/dev/sdb1 /www_dir ext4 defaults 0 1
+/dev/sdb1 /db_dir ext4 defaults 0 1
+/dev/sdb1 /backup_dir ext4 defaults 0 1
+
+
+systemctl daemon-reload
 
 
 # CREACION DE LOS VOLUMENES
