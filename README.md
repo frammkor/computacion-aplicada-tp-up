@@ -63,6 +63,24 @@ b. MYSQL. Que tenga instalado y funcionando un servidor MySQL o MARIADB. A este 
 
 *1: Puede ser que el dispositivo sea sdb, sdc o sdd, por eso el “*”en la descripción de los cuadros.
 
+2. Los archivos correspondientes a la base de datos creados y los archivos php servidos, deben estar en sus respectivos filesystems diferentes, que se deben crear aparte de la instalación y ser montados al inicio del sistema operativo. En ambos servidores se debe contar con un directorio de Backup para resguardos.
+
+Estos filesystems deben ser montados en 
+- /www_dir, /db_dir
+- /backup_dir (x2)
+  
+Siendo /www_dir para los archivos .php servidos en el WebServer (es decir, reemplaza a /var/www), /db_dir para los archivos de la base de datos (es decir que, reemplaza a /var/lib/mysql) en el DBServer, y /backup_dir para los archivos de backup en ambos servidores. Para esto se debe modificar los archivos de configuración de los servicios respectivos (apache2 y mysql).
+
+El tamaño de los mismos es:
+- /www_dir: 3GB
+- /db_dir: 3GB
+- /backup_dir: 6GB
+
+Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en clase. Pueden utilizar el siguiente link como apoyo. Los LVs que se creen, tienen que tener los nombres acordes a lo que va a alojar:
+- lv_db
+- lv_backup
+- lv_www.
+
 
 ### Resolucion
 
@@ -143,24 +161,6 @@ apachectl restart
 
 
 ```
-
-2. Los archivos correspondientes a la base de datos creados y los archivos php servidos, deben estar en sus respectivos filesystems diferentes, que se deben crear aparte de la instalación y ser montados al inicio del sistema operativo. En ambos servidores se debe contar con un directorio de Backup para resguardos.
-
-Estos filesystems deben ser montados en 
-- /www_dir, /db_dir
-- /backup_dir (x2)
-  
-Siendo /www_dir para los archivos .php servidos en el WebServer (es decir, reemplaza a /var/www), /db_dir para los archivos de la base de datos (es decir que, reemplaza a /var/lib/mysql) en el DBServer, y /backup_dir para los archivos de backup en ambos servidores. Para esto se debe modificar los archivos de configuración de los servicios respectivos (apache2 y mysql).
-
-El tamaño de los mismos es:
-- /www_dir: 3GB
-- /db_dir: 3GB
-- /backup_dir: 6GB
-
-Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en clase. Pueden utilizar el siguiente link como apoyo. Los LVs que se creen, tienen que tener los nombres acordes a lo que va a alojar:
-- lv_db
-- lv_backup
-- lv_www.
 
 ## Redes
 1. Las placas de red deben ser configuradas con el fin de aceptar una IP ESTÁTICA.
