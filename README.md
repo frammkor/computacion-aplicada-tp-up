@@ -37,7 +37,7 @@ echo "deb-src http://deb.debian.org/debian buster main contrib non-free" | sudo 
 apt update
 
 # Instalar paquetes que se utilizaran
-apt-get -y install net-tools openssh-server mardiadb-server apache2
+apt-get -y install net-tools openssh-server mardiadb-server apache2 mdadm lvm2
 ```
 
 ## 2 - Setear Servidores
@@ -79,7 +79,7 @@ El tamaño de los mismos es:
 Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en clase. Pueden utilizar el siguiente link como apoyo. Los LVs que se creen, tienen que tener los nombres acordes a lo que va a alojar:
 - lv_db
 - lv_backup
-- lv_www.
+- lv_www
 
 
 ### Resolucion
@@ -90,7 +90,11 @@ Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en
 * Configurar ubicacion y tamaño: 3 GB
 - Selecionar el nuevo disco creado > Seleccionar > Aceptar
 
-2. Preparar, particionar formatear y montar el nuevo disco
+2. Crear un RAID (Redundant Array of Independent Disks)
+3. Preparar, particionar, formatear y montar el nuevo disco utilizando volumenes
+
+[Gestión de RAID a través de MDADM](https://blog.alcancelibre.org/staticpages/index.php/como-mdadm)
+[Red Hat - 5.2. Physical Volume Administration](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html/logical_volume_manager_administration/physvol_admin)
 
 #### Implementación en bash
 ```bash
@@ -100,9 +104,14 @@ Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en
 # listar 'storage divices' detectados
 # ls -l /dev/sd*
 
+# crear el RAID 
+# migth need handle input
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd 
+madam --query dev/md0
+
 # cear particion
-fdisk /dev/sdb
-# input:
+# fdisk /dev/md0
+# ingresar:
 # - n
 # - p
 # - 1
@@ -110,7 +119,8 @@ fdisk /dev/sdb
 # - ENTER
 # - w
 
-fdisk -u -p /dev/sdb <<EOF
+# automatizado:
+fdisk -u -p /dev/md0 <<EOF
 n
 p
 1
@@ -119,8 +129,23 @@ p
 w
 EOF
 
-# Contruir un sistema de ficheros / Make filesystem
-mkfs -t ext4 /dev/sdb1
+# CONFIGURAR LOS VOLUMENES
+
+# inicializar el volumen fisico
+pvcreate /dev/md0p1
+# `pvdisplay` para ver lo creado
+
+# crear el grupo de volumen
+vgcreate vg_tp /dev/md0p1
+
+# crear el volumen lógico
+lvcreate -n lv_www -L 3G vg_tp
+
+# Contruir un sistema de ficheros formateando los volúmenes logicos
+# Make filesystem
+mkfs -t ext4 /dev/vg_tp/lv_www
+mkfs -t ext4 /dev/vg_tp/lv_db
+mkfs -t ext4 /dev/vg_tp/lv_backup
 
 
 # MONTAJE DE DISCOS
@@ -133,20 +158,25 @@ mkdir /backup_dir
 mkdir /db_dir
 mkdir /backup_dir
 
+# montar los volumenes a los directorios
+mount /dev/vg_tp/lv_www /lv_www
+
 # agregar 
 # EXTRA usar 'blkid' command para obtener el UUID del dispositivo
  cp /etc/fstab /home/backups-files
 
 echo "deb http://deb.debian.org/debian buster main contrib non-free" | sudo tee -a /etc/fstab
-/dev/sdb1 /www_dir ext4 defaults 0 1
-/dev/sdb1 /db_dir ext4 defaults 0 1
-/dev/sdb1 /backup_dir ext4 defaults 0 1
+/dev/mapper/vg_pt-lv_www /www_dir ext4 defaults 0 1
+/dev/mapper/vg_pt-lv_db /db_dir ext4 defaults 0 1
+/dev/mapper/vg_pt-lv_backup /backup_dir ext4 defaults 0 1
 
 
 systemctl daemon-reload
 
 
 # CREACION DE LOS VOLUMENES
+
+
 
 
 # chech apache status using:
