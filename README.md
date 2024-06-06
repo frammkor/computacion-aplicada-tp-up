@@ -154,6 +154,9 @@ mkdir /backup_dir
 mount /dev/vg_tp/lv_backup /backup_dir
 
 # agregar disco a la configuracion de arranque en '/etc/fstab'
+# EXTRA usar 'blkid' command para obtener el UUID del dispositivo
+mv /etc/fstab /home/backups-files
+
 echo "/dev/mapper/vg_pt-lv_backup /backup_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 ```
 
@@ -174,10 +177,10 @@ mount /dev/vg_tp/lv_www /www_dir
 # agregar disco a la configuracion de arranque en '/etc/fstab'
 echo "/dev/mapper/vg_pt-lv_www /www_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 
-
-# agregar 
-# EXTRA usar 'blkid' command para obtener el UUID del dispositivo
- cp /etc/fstab /home/backups-files
+# man systemctl says:
+# daemon-reload:
+# Reload systemd manager configuration. This will rerun all generators (see systemd.generator(7)), reload all unit files, and recreate the entire dependency tree. While the daemon is being reloaded, all sockets systemd listens on behalf of user configuration will stay accessible.
+systemctl daemon-reload
 ```
 
 #### CONFIGURACION APACHE EN WEB SERVER
