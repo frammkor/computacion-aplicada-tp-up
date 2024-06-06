@@ -83,6 +83,7 @@ Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en
 
 
 ### Resolucion
+Como se deben preprar dos maquinas virtuales separadas con el un disco cada el siguiente paso debe repetirse para cada maquina.
 
 1. Configurarle un nuevo disco la maquina virtual (apagada)
 - Configuracion > Almacenamiento > Añadir disco duro > boton crear
@@ -96,7 +97,7 @@ Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en
 [Gestión de RAID a través de MDADM](https://blog.alcancelibre.org/staticpages/index.php/como-mdadm)
 [Red Hat - 5.2. Physical Volume Administration](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html/logical_volume_manager_administration/physvol_admin)
 
-#### Implementación en bash
+#### CONFIGURACION DE DISCOS PARA COMUN A AMBAS MAQUINAS
 ```bash
 # listar informacion de los dispositivos de bloque
 # lsblk
@@ -106,7 +107,7 @@ Se deberá implementar esta solución con LVM y RAID 1, de acuerdo a lo visto en
 
 # crear el RAID 
 # migth need handle input
-mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd 
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sd#c /dev/sd#d
 madam --query dev/md0
 
 # cear particion
@@ -143,42 +144,46 @@ lvcreate -n lv_www -L 3G vg_tp
 
 # Contruir un sistema de ficheros formateando los volúmenes logicos
 # Make filesystem
-mkfs -t ext4 /dev/vg_tp/lv_www
-mkfs -t ext4 /dev/vg_tp/lv_db
 mkfs -t ext4 /dev/vg_tp/lv_backup
 
 
 # MONTAJE DE DISCOS
-
-# web-server
-mkdir /www_dir
-mkdir /backup_dir
-
-# db-server
-mkdir /db_dir
 mkdir /backup_dir
 
 # montar los volumenes a los directorios
-mount /dev/vg_tp/lv_www /lv_www
+mount /dev/vg_tp/lv_backup /backup_dir
+
+# agregar disco a la configuracion de arranque en '/etc/fstab'
+echo "/dev/mapper/vg_pt-lv_backup /backup_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+```
+
+
+#### CONFIGURACION DE DISCOS PARA WEB SERVER
+```bash
+# web-server
+
+# Make filesystem
+mkfs -t ext4 /dev/vg_tp/lv_www
+
+# Crear direrectorio y montarle el disco
+mkdir /www_dir
+
+# montar los volumenes a los directorios
+mount /dev/vg_tp/lv_www /www_dir
+
+# agregar disco a la configuracion de arranque en '/etc/fstab'
+echo "/dev/mapper/vg_pt-lv_www /www_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+
 
 # agregar 
 # EXTRA usar 'blkid' command para obtener el UUID del dispositivo
  cp /etc/fstab /home/backups-files
+```
 
-echo "deb http://deb.debian.org/debian buster main contrib non-free" | sudo tee -a /etc/fstab
-/dev/mapper/vg_pt-lv_www /www_dir ext4 defaults 0 1
-/dev/mapper/vg_pt-lv_db /db_dir ext4 defaults 0 1
-/dev/mapper/vg_pt-lv_backup /backup_dir ext4 defaults 0 1
+#### CONFIGURACION APACHE EN WEB SERVER
+*TODO*
 
-
-systemctl daemon-reload
-
-
-# CREACION DE LOS VOLUMENES
-
-
-
-
+```bash
 # chech apache status using:
 # sudo systemctl status apache2
 
@@ -188,9 +193,24 @@ systemctl daemon-reload
 # reiniciar apache para que impacten los cambios
 apachectl restart
 # service apache2 restart
-
-
 ```
+
+#### CONFIGURACION DE DISCOS PARA DB
+```bash
+mkfs -t ext4 /dev/vg_tp/lv_db
+
+# db-server
+mkdir /db_dir
+
+# montar los volumenes a los directorios
+mount /dev/vg_tp/lv_db /db_dir
+
+# agregar disco a la configuracion de arranque en '/etc/fstab'
+echo "/dev/mapper/vg_pt-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+```
+
+#### CONFIGURACION MYSQL EN DB
+*TODO*
 
 ## Redes
 1. Las placas de red deben ser configuradas con el fin de aceptar una IP ESTÁTICA.
