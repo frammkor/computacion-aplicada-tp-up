@@ -108,7 +108,7 @@ Como se deben preprar dos maquinas virtuales separadas con el un disco cada el s
 # crear el RAID 
 # migth need handle input
 mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sd#c /dev/sd#d
-madam --query dev/md0
+mdadm --query dev/md0
 
 # cear particion
 # fdisk /dev/md0
@@ -185,6 +185,10 @@ systemctl daemon-reload
 
 #### CONFIGURACION APACHE EN WEB SERVER
 *TODO*
+1 - Copiar el archivo index.php en www_dir
+2 - Modificar el archivo de configuracion de apache para que apunte a ese directorio
+3 - Reiniciar apache
+
 
 ```bash
 # chech apache status using:
