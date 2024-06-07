@@ -186,21 +186,16 @@ systemctl daemon-reload
 #### CONFIGURACION APACHE EN WEB SERVER
 *TODO*
 1 - Copiar el archivo index.php en www_dir
-2 - Modificar el archivo de configuracion de apache para que apunte a ese directorio
-3 - Reiniciar apache
-
-
-```bash
-# chech apache status using:
-# sudo systemctl status apache2
-
-# modify the php.ini file to have a source from a diferent root directory
-# modificar el archivo php.ini para que sirva por default desde el directorio /www_dir
-
-# reiniciar apache para que impacten los cambios
-apachectl restart
-# service apache2 restart
+2 - Modificar el archivo de configuracion `/etc/apache2/sites-available/000-default.conf`
 ```
+<Directory /www_dir/>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+</Directory>
+```
+3 - Reiniciar apache
+`apachectl restart` o `service apache2 restart`
 
 #### CONFIGURACION DE DISCOS PARA DB
 ```bash
