@@ -37,7 +37,7 @@ echo "deb-src http://deb.debian.org/debian buster main contrib non-free" | sudo 
 apt update
 
 # Instalar paquetes que se utilizaran
-apt-get -y install net-tools openssh-server mardiadb-server apache2 mdadm lvm2
+apt-get -y install net-tools openssh-server mardiadb-server apache2 mdadm lvm2 php php-mysqli
 ```
 
 ## 2 - Setear Servidores
