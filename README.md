@@ -205,6 +205,9 @@ systemctl daemon-reload
 
 #### CONFIGURACION DE DISCOS PARA DB
 ```bash
+# crear el volumen lógico
+lvcreate -n lv_db -L 3G vg_tp
+
 mkfs -t ext4 /dev/vg_tp/lv_db
 
 # db-server
