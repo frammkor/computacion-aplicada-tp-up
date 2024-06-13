@@ -140,7 +140,7 @@ pvcreate /dev/md0p1
 vgcreate vg_tp /dev/md0p1
 
 # crear el volumen lógico
-lvcreate -n lv_www -L 3G vg_tp
+lvcreate -n lv_backup -L 6G vg_tp
 
 # Contruir un sistema de ficheros formateando los volúmenes logicos
 # Make filesystem
@@ -177,6 +177,10 @@ mount /dev/vg_tp/lv_www /www_dir
 # agregar disco a la configuracion de arranque en '/etc/fstab'
 echo "/dev/mapper/vg_tp-lv_www /www_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 
+# Nombrar la Maquina accediendo a
+rm /etc/hostname
+echo "WebServer" | sudo tee -a /etc/hostname
+
 # man systemctl says:
 # daemon-reload:
 # Reload systemd manager configuration. This will rerun all generators (see systemd.generator(7)), reload all unit files, and recreate the entire dependency tree. While the daemon is being reloaded, all sockets systemd listens on behalf of user configuration will stay accessible.
@@ -209,6 +213,10 @@ mount /dev/vg_tp/lv_db /db_dir
 
 # agregar disco a la configuracion de arranque en '/etc/fstab'
 echo "/dev/mapper/vg_tp-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+
+# Nombrar la Maquina accediendo a
+rm /etc/hostname
+echo "MySQL" | sudo tee -a /etc/hostname
 ```
 
 #### CONFIGURACION MYSQL EN DB
