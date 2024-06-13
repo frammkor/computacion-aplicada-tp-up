@@ -221,11 +221,31 @@ echo "/dev/mapper/vg_tp-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fsta
 
 # Nombrar la Maquina accediendo a
 rm /etc/hostname
-echo "MySQL" | sudo tee -a /etc/hostname
+echo "DBServer" | sudo tee -a /etc/hostname
 ```
 
 #### CONFIGURACION MYSQL EN DB
 *TODO*
+```bash
+# detener el proceso de mysql
+systemctl stop mysql
+
+# ingresar al archivo de configuracion
+sudo nano /etc/mysql/my.cnf
+
+# modificar parametro 'datadir' datadir=/backup_dir
+
+# preservar los permisos originales
+chown -R mysql:mysql /backup_dir
+
+# iniciar mysql
+sudo systemctl start mysql
+
+# utilizar el comando mysql para importar el backup
+mysql
+```
+
+Ingresar source /root/backup-files/db.sql
 
 ## Redes
 1. Las placas de red deben ser configuradas con el fin de aceptar una IP ESTÁTICA.
