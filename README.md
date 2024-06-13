@@ -160,6 +160,14 @@ mv /etc/fstab /home/backups-files
 echo "/dev/mapper/vg_tp-lv_backup /backup_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 ```
 
+#### CONFIGURACION DE SSH PARA AMBAS MAQUINAS
+
+```
+mv clave_publica_sonda.pub .ssh/authorized_keys
+
+
+```
+
 
 #### CONFIGURACION DE DISCOS PARA WEB SERVER
 ```bash
@@ -228,7 +236,10 @@ echo "DBServer" | sudo tee -a /etc/hostname
 *TODO*
 No se hizo completo, mysql sigue levantando del directorio original
 
-[Es esto?](https://www.tecmint.com/change-default-mysql-mariadb-data-directory-in-linux/)
+[REF](https://www.tecmint.com/change-default-mysql-mariadb-data-directory-in-linux/)
+
+Modificar linea 28 en el archivo `/etc/mysql/mariadb.conf.d/50-server.cnf` a `bind-address = 192.168.0.20`
+
 
 ```bash
 # detener el proceso de mysql
