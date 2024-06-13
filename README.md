@@ -157,7 +157,7 @@ mount /dev/vg_tp/lv_backup /backup_dir
 # EXTRA usar 'blkid' command para obtener el UUID del dispositivo
 mv /etc/fstab /home/backups-files
 
-echo "/dev/mapper/vg_pt-lv_backup /backup_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+echo "/dev/mapper/vg_tp-lv_backup /backup_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 ```
 
 
@@ -175,7 +175,7 @@ mkdir /www_dir
 mount /dev/vg_tp/lv_www /www_dir
 
 # agregar disco a la configuracion de arranque en '/etc/fstab'
-echo "/dev/mapper/vg_pt-lv_www /www_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+echo "/dev/mapper/vg_tp-lv_www /www_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 
 # man systemctl says:
 # daemon-reload:
@@ -208,7 +208,7 @@ mkdir /db_dir
 mount /dev/vg_tp/lv_db /db_dir
 
 # agregar disco a la configuracion de arranque en '/etc/fstab'
-echo "/dev/mapper/vg_pt-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
+echo "/dev/mapper/vg_tp-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fstab
 ```
 
 #### CONFIGURACION MYSQL EN DB
