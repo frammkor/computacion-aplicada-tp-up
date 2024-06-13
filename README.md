@@ -238,12 +238,13 @@ No se hizo completo, mysql sigue levantando del directorio original
 
 [REF](https://www.tecmint.com/change-default-mysql-mariadb-data-directory-in-linux/)
 
-Modificar linea 28 en el archivo `/etc/mysql/mariadb.conf.d/50-server.cnf` a `bind-address = 192.168.0.20`
-
-
 ```bash
 # detener el proceso de mysql
 systemctl stop mysql
+
+# Modificar linea 28 en el archivo `/etc/mysql/mariadb.conf.d/50-server.cnf` a `bind-address = 192.168.0.20`
+
+# Confirmar cambios con `netstat -natupl | grep 3306`
 
 # ingresar al archivo de configuracion
 sudo nano /etc/mysql/my.cnf
