@@ -232,7 +232,7 @@ echo "MySQL" | sudo tee -a /etc/hostname
 1. Configuar la Maquina virtual desde VirtualBox para utilizar un adaptador punte:
 Configuacion > Redes > Adaptador 1 > Attached to: "Bridge Adapter"
 2. Usar `ipconfig` en la maquina host para obetener la direcciones de 'puerta de enlace' y la mascara de subred
-3. Configurar `/etc/network/interfaces`
+3. Configurar `/etc/network/interfaces`. El ultimo termino de `address` puede ser un numero cualquiera
 
 ```
 iface endp0s3 inet static
