@@ -243,6 +243,7 @@ No se hizo completo, mysql sigue levantando del directorio original
 systemctl stop mysql
 
 # Modificar linea 28 en el archivo `/etc/mysql/mariadb.conf.d/50-server.cnf` a `bind-address = 192.168.0.20`
+# Modificar linea 31 en el archivo `/etc/mysql/mariadb.conf.d/50-server.cnf` a `datadir = /db_dir`
 
 # Confirmar cambios con `netstat -natupl | grep 3306`
 
@@ -303,6 +304,21 @@ script.
 Esto implica que el script debe manejar que los argumentos no hayan
 sido escritos por el usuario.
 7. El script debe ser agregado al cron.
+
+a. Asegurarse que este corriendo
+/etc/init.d/cron status
+
+b. Asegurarse que el escript tenga permisos de ejecución
+
+
+
+Ejemplo
+```bash
+!#/bin/bash
+HOY=
+```
+
+
 
 ## Entregables
 1. Los entregables consisten en los directorios /root, /etc, /opt, /var,
