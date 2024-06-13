@@ -226,6 +226,10 @@ echo "DBServer" | sudo tee -a /etc/hostname
 
 #### CONFIGURACION MYSQL EN DB
 *TODO*
+No se hizo completo, mysql sigue levantando del directorio original
+
+[Es esto?](https://www.tecmint.com/change-default-mysql-mariadb-data-directory-in-linux/)
+
 ```bash
 # detener el proceso de mysql
 systemctl stop mysql
