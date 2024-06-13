@@ -189,8 +189,9 @@ systemctl daemon-reload
 
 #### CONFIGURACION APACHE EN WEB SERVER
 *TODO*
-1 - Copiar el archivo index.php en www_dir
-2 - Modificar el archivo de configuracion `/etc/apache2/sites-available/000-default.conf`
+1. Copiar el archivo index.php en www_dir
+2. Modificar la linea de `DocumentRoot` en archivo de configuracion `/etc/apache2/sites-available/000-default.conf` que sea `/www_dir`
+4. Agregar esta configuracion en `/etc/apache2/apache2.conf`
 ```
 <Directory /www_dir/>
         Options Indexes FollowSymLinks
@@ -198,7 +199,8 @@ systemctl daemon-reload
         Require all granted
 </Directory>
 ```
-3 - Reiniciar apache
+
+4 - Reiniciar apache
 `apachectl restart` o `service apache2 restart`
 
 #### CONFIGURACION DE DISCOS PARA DB
