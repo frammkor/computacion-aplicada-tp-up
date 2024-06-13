@@ -218,6 +218,20 @@ echo "/dev/mapper/vg_pt-lv_db /db_dir ext4 defaults 0 1" | sudo tee -a /etc/fsta
 1. Las placas de red deben ser configuradas con el fin de aceptar una IP ESTÁTICA.
 2. Los servidores deben contar con una IP LOCAL en sus interfaces del mismo rango para que entre ellos puedan comunicarse.
 
+### Resolucion
+1. Configuar la Maquina virtual desde VirtualBox para utilizar un adaptador punte:
+Configuacion > Redes > Adaptador 1 > Attached to: "Bridge Adapter"
+2. Usar `ipconfig` en la maquina host para obetener la direcciones de 'puerta de enlace' y la mascara de subred
+3. Configurar `/etc/network/interfaces`
+
+```
+iface endp0s3 inet static
+  address 192.168.0.20
+  netmask 255.255.255.0
+  gateway 192.168.11.1
+```
+
+
 ## Backup
 1. Se deberá realizar backup por medio de UN script de desarrollo
 propio denominado “backup_full.sh” a los directorios que se
