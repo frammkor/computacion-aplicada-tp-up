@@ -233,7 +233,7 @@ systemctl stop mysql
 # ingresar al archivo de configuracion
 sudo nano /etc/mysql/my.cnf
 
-# modificar parametro 'datadir' datadir=/backup_dir
+# modificar parametro 'datadir' datadir=/db_dir
 
 # preservar los permisos originales
 chown -R mysql:mysql /backup_dir
