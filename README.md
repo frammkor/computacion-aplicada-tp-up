@@ -310,16 +310,6 @@ a. Asegurarse que este corriendo
 
 b. Asegurarse que el escript tenga permisos de ejecución
 
-
-
-Ejemplo
-```bash
-!#/bin/bash
-HOY=
-```
-
-
-
 ## Entregables
 1. Los entregables consisten en los directorios /root, /etc, /opt, /var,
 /www_dir, /db_dir y /backup_dir, de cada uno de los servidores. Todos
