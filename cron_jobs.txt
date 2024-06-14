@@ -1,0 +1,11 @@
+# Backup diario de /etc y /var/logs a las 0:00
+0 0 * * * /root/backup_scricpt.sh /etc /backup_dir
+0 0 * * * /root/backup_script.sh /var/logs /backup_dir
+
+# Backup semanal de /www_dir a las 23:00 los domingos
+0 23 * * 0 /root/backup_script.sh /www_dir /backup_dir
+
+# Backup de /db_dir a las 0:00 los lunes, miércoles y viernes
+0 0 * * 1 /root/backup_script.sh /db_dir /backup_dir
+0 0 * * 3 /root/backup_script.sh /db_dir /backup_dir
+0 0 * * 5 /root/backup_script.sh /db_dir /backup_dir
