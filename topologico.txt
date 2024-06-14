@@ -14,6 +14,7 @@
             |  Hostname:       |                        |  Hostname:          |
             |  WebServer       |                        |  DBServer           |
             |                  |                        |                     |
+            |  Main Proceses:   |                       |  Main Proceses:     |
             |  SSH Server      |                        |  SSH Server         |
             |  Apache Server   |                        |  MariaDB Server     |
             +-------+----------+                        +----------+----------+
